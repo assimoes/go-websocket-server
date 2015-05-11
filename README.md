@@ -7,7 +7,6 @@ Shameless clone of Gorilla's websocket sample. Using this as a base to build a w
 
 ## External Dependencies
 ```
-gorilla/mux
 gorilla/websocket
 ```
 ## Setup
