@@ -24,7 +24,7 @@ func main() {
     panic("Unable to parse config file")
   }
 
-  var addr = flag.String("addr", config.Address, "Muzzley Websocket Server Address")
+  var addr = flag.String("addr", config.Address, "Websocket Server Address")
 
   flag.Parse()
   go h.run()
