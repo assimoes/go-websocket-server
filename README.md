@@ -49,3 +49,11 @@ If you want to send a message to a specific channel, your payload must be a json
 
 ```
 If you don't specify a Channel, then the message is broadcasted to all connections on the hub
+
+To Join a channel you should send the following payload:
+
+```
+{
+  "channel": "the channel",
+  "command": "join"
+}
