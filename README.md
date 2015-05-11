@@ -2,8 +2,7 @@
 
 ## Introduction
 
-Shameless clone of Gorilla's websocket sample. Using this as a base to build a websocket server with support to rooms.
-
+Shameless clone of Gorilla's websocket sample. Using this as a base to build a websocket server with rooms support.
 For now, these are hardcoded.
 
 
