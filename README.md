@@ -24,7 +24,7 @@ $ go get
 
 #### Change websocket server address 
 
-Modify and copy ```config.json``` file to /etc/go-websocket-server (This is temporary, shouldn't be hardcoded)
+Modify ```config.json``` file accordingly or just leave it be.
 
 #### Build the server
 
