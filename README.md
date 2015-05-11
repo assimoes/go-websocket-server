@@ -37,3 +37,16 @@ $ go build
 ```
 $ ./go-websocket-server
 ```
+
+#### Message structure
+
+If you want to send a message to a specific channel, your payload must be a json structure:
+
+```
+{
+  "channel": "the channel",
+  "data": "the data"
+}
+
+```
+If you don't specify a Channel, then the message is broadcasted to all connections on the hub
