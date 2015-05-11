@@ -12,6 +12,7 @@ type hub struct {
   unregister chan *connection
   broadcastToChannel chan []byte
   channels map[string]channel
+  joinChannel chan *connection
 }
 
 var h = hub {
@@ -21,6 +22,7 @@ var h = hub {
   connections: make(map[*connection]bool),
   broadcastToChannel: make(chan []byte),
   channels: make(map[string]channel),
+  joinChannel: make(chan *connection),
 }
 
 func (h *hub) run() {
@@ -62,6 +64,20 @@ func (h *hub) run() {
           delete(h.connections, c)
         }
       }
+    case c := <-h.joinChannel:
+      if _, ok := h.channels[c.channel]; !ok {
+          chann := channel{
+            key: c.channel,
+            connections: make(map[*connection]bool),
+          }
+          log.Println("creating channel")
+          h.channels[c.channel] = chann
+          h.channels[c.channel].connections[c]=true
+      } else {
+        h.channels[c.channel].connections[c]=true
+      }
+
+
     case m := <-h.broadcastToChannel:
       var msg IncMessage
       _err := json.Unmarshal(m, &msg)

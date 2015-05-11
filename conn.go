@@ -25,11 +25,14 @@ var upgrader = websocket.Upgrader{
 type connection struct {
   ws *websocket.Conn
   send chan []byte
+  channel string
 }
 
 type IncMessage struct {
   Channel string `json:"channel"`
   Data string `json:"data"`
+  Connection *connection
+  Command string `json:"command"`
 }
 
 func (c *connection) readPump() {
@@ -51,16 +54,24 @@ func (c *connection) readPump() {
     var msg IncMessage
     _err := json.Unmarshal(message, &msg)
 
+    msg.Connection = c
+    log.Println(msg.Connection)
     if _err != nil {
       log.Println(_err)
     }
 
     if msg.Channel != "" {
-      if _,allowed := h.channels[msg.Channel].connections[c]; allowed {
-        log.Println("broadcast to channel " + msg.Channel)
-        h.broadcastToChannel <- message
+      if msg.Command == "join" {
+        log.Println("join hit")
+        c.channel = msg.Channel
+        h.joinChannel <- c
       } else {
-        log.Println("Trying to send to unauthorized channel")
+        if _,allowed := h.channels[msg.Channel].connections[c]; allowed {
+          log.Println("broadcast to channel " + msg.Channel)
+          h.broadcastToChannel <- message
+        } else {
+          log.Println("Trying to send to unauthorized channel")
+        }
       }
     } else {
       log.Println("broadcast to all")
