@@ -5,7 +5,11 @@
 Shameless clone of Gorilla's websocket sample. Using this as a base to build a websocket server with rooms support.
 ~~For now, these are hardcoded.~~
 
-
+## External Dependencies
+```
+gorilla/mux
+gorilla/websocket
+```
 ## Setup
 
 You must have Go installed on your machine.
