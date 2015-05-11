@@ -5,6 +5,7 @@ import(
   "log"
   "net/http"
   "time"
+  "encoding/json"
 )
 
 const (
@@ -26,8 +27,9 @@ type connection struct {
   send chan []byte
 }
 
-type incmessage struct {
-  channel string
+type IncMessage struct {
+  Channel string `json:"channel"`
+  Data string `json:"data"`
 }
 
 func (c *connection) readPump() {
@@ -46,12 +48,19 @@ func (c *connection) readPump() {
       break
     }
 
-    msg := incmessage{channel: "mainlobby"}
-log.Println("incoming message step 1")
-    if msg.channel == "mainlobby" {
-      if _,allowed := h.channels["lobby"].connections[c]; allowed {
-        log.Println("broadcast to channel")
+    var msg IncMessage
+    _err := json.Unmarshal(message, &msg)
+
+    if _err != nil {
+      log.Println(_err)
+    }
+
+    if msg.Channel != "" {
+      if _,allowed := h.channels[msg.Channel].connections[c]; allowed {
+        log.Println("broadcast to channel " + msg.Channel)
         h.broadcastToChannel <- message
+      } else {
+        log.Println("Trying to send to unauthorized channel")
       }
     } else {
       log.Println("broadcast to all")

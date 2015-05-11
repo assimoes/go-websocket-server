@@ -2,6 +2,7 @@ package main
 
 import (
   "log"
+  "encoding/json"
 )
 
 type hub struct {
@@ -31,6 +32,9 @@ func (h *hub) run() {
 
   h.channels["lobby"] = chann
 
+  // NEED TO IMPLEMENT CASE FOR JOIN CHANNEL MESSAGES.
+  // WHEN SUCH MESSAGE ARRIVES ON THAT CHANNEL, IT SHOULD ADD THE CONNECTION TO THE NEW/EXISTING CHANNEL
+
   for {
     select {
     case c := <-h.register:
@@ -59,8 +63,14 @@ func (h *hub) run() {
         }
       }
     case m := <-h.broadcastToChannel:
-      log.Println("sending message to lobby users ", string(m))
-      for c := range h.channels["lobby"].connections {
+      var msg IncMessage
+      _err := json.Unmarshal(m, &msg)
+
+      if _err != nil {
+        log.Println(_err)
+      }
+
+      for c := range h.channels[msg.Channel].connections {
         select {
         case c.send <-m :
         default:
